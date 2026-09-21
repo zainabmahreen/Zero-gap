@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Harness - Physics Diagnostic</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        select, button {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: var(--primary-hover);
+        }
+        button.secondary {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        button.secondary:hover {
+            background: var(--bg);
+        }
+        .hidden {
+            display: none !important;
+        }
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .topic-btn {
+            background: var(--surface);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        .topic-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+        .tab {
+            cursor: pointer;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+        .resource-box {
+            background: var(--bg);
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Harness Educational Diagnostic</h1>
+            <p style="color: var(--text-light)">Fill your foundational gaps dynamically.</p>
+        </header>
+
+        <!-- Phase 1: Syllabus Selection -->
+        <div id="syllabus-view" class="card">
+            <h2>Select Your Curriculum</h2>
+            <div class="form-group">
+                <label>Board</label>
+                <select id="board-select">
+                    <option value="cbse">CBSE</option>
+                    <option value="icse" disabled>ICSE (Coming Soon)</option>
+                    <option value="state" disabled>State Board (Coming Soon)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Class</label>
+                <select id="class-select">
+                    <option value="11">Class 11</option>
+                    <option value="12" disabled>Class 12 (Coming Soon)</option>
+                    <option value="10" disabled>Class 10 (Coming Soon)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Subject</label>
+                <select id="subject-select">
+                    <option value="physics">Physics (Kinematics Slice)</option>
+                    <option value="chem" disabled>Chemistry (Coming Soon)</option>
+                </select>
+            </div>
+            <button onclick="showTopics()">Proceed to Topics</button>
+        </div>
+
+        <!-- Phase 2: Topic Selection (DAG) -->
+        <div id="topics-view" class="card hidden">
+            <h2>Class 11 Physics - Kinematics</h2>
+            <p>Select a topic you want to study. We'll check if you have the prerequisites covered.</p>
+            <div class="topic-grid" id="topic-container">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+
+        <!-- Phase 3: A/B/C Prerequisite Gate -->
+        <div id="gate-view" class="card hidden">
+            <h2>Wait! Prerequisite Check</h2>
+            <p id="gate-message"></p>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.5rem;">
+                <button onclick="resolveGate('A')">A: Yes, I'm good at them. I can proceed.</button>
+                <button class="secondary" onclick="resolveGate('B')">B: I'm unsure. Take a quick quiz to test me.</button>
+                <button class="secondary" onclick="resolveGate('C')">C: No, I'm not good at them. Teach me those first.</button>
+            </div>
+        </div>
+
+        <!-- Phase 4: Resources & AI Summary -->
+        <div id="resources-view" class="card hidden">
+            <h2 id="resource-title"></h2>
+            
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('overview')">Overview (AI Summary)</div>
+                <div class="tab" onclick="switchTab('deepdive')">Deep Dive</div>
+                <div class="tab" onclick="switchTab('realworld')">Real-World Application</div>
+            </div>
+
+            <div id="tab-overview">
+                <div class="resource-box">
+                    <strong>AI Generated Summary (Pre-computed):</strong>
+                    <p id="ai-summary-text"></p>
+                </div>
+                <div class="resource-box">
+                    <strong>Recommended Quick Video:</strong>
+                    <p>📺 YouTube: <a href="#" style="color:var(--primary)">2-Minute Basics for this topic</a></p>
+                </div>
+            </div>
+
+            <div id="tab-deepdive" class="hidden">
+                <div class="resource-box">
+                    <strong>In-Depth Study Materials:</strong>
+                    <ul>
+                        <li>Khan Academy: Comprehensive Article & Derivations</li>
+                        <li>NCERT Textbook Reference: Chapter Modules</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="tab-realworld" class="hidden">
+                <div class="resource-box" style="border-left-color: #10b981;">
+                    <strong>Why does this matter?</strong>
+                    <p id="real-world-text"></p>
+                </div>
+            </div>
+            
+            <button onclick="goBackToTopics()" style="margin-top: 1rem;" class="secondary">← Back to Topics</button>
+        </div>
+    </div>
+
+    <script>
+        // DAG Structure based on agreed slice
+        const dag = {
+            "vectors": { 
+                title: "Vectors", 
+                prereqs: [], 
+                summary: "Vectors are quantities that possess both magnitude and direction, unlike scalars.",
+                realWorld: "Used by airplane pilots to calculate crosswinds and chart flight paths."
+            },
+            "scalars": { 
+                title: "Scalars & Distance/Speed", 
+                prereqs: [], 
+                summary: "Scalars are physical quantities that are fully described by a magnitude (or numerical value) alone.",
+                realWorld: "Your car's speedometer shows scalar speed, telling you how fast you're going, regardless of direction."
+            },
+            "1d_motion": { 
+                title: "1D Motion / Equations of Motion", 
+                prereqs: ["scalars"], 
+                summary: "The study of motion in a straight line, utilizing the three kinematic equations of motion.",
+                realWorld: "Calculating how long it takes a braking car to come to a complete stop before hitting a red light."
+            },
+            "relative_velocity": { 
+                title: "Relative Velocity", 
+                prereqs: ["1d_motion"], 
+                summary: "The velocity of an object or observer B in the rest frame of another object or observer A.",
+                realWorld: "Walking forward on a moving train - your speed relative to the ground is different from your speed relative to the train."
+            },
+            "2d_vectors": { 
+                title: "2D Vector Operations", 
+                prereqs: ["vectors"], 
+                summary: "Adding, subtracting, and resolving vectors into X and Y components.",
+                realWorld: "Used in video game physics engines to calculate exactly where a character will land after jumping diagonally."
+            },
+            "projectile": { 
+                title: "Projectile Motion", 
+                prereqs: ["1d_motion", "2d_vectors"], 
+                summary: "A form of motion where an object moves in a bilaterally symmetrical, parabolic path.",
+                realWorld: "Calculating the exact trajectory and landing spot of a basketball thrown towards the hoop."
+            },
+            "circular": { 
+                title: "Circular Motion", 
+                prereqs: ["2d_vectors"], 
+                summary: "Movement of an object along the circumference of a circle or rotation along a circular path.",
+                realWorld: "Designing curved highway exit ramps with the correct banking angle so cars don't slip."
+            }
+        };
+
+        let currentTopic = "";
+
+        function hideAll() {
+            document.getElementById('syllabus-view').classList.add('hidden');
+            document.getElementById('topics-view').classList.add('hidden');
+            document.getElementById('gate-view').classList.add('hidden');
+            document.getElementById('resources-view').classList.add('hidden');
+        }
+
+        function showTopics() {
+            hideAll();
+            const container = document.getElementById('topic-container');
+            container.innerHTML = "";
+            
+            Object.keys(dag).forEach(key => {
+                const btn = document.createElement('button');
+                btn.className = 'topic-btn';
+                btn.innerText = dag[key].title;
+                btn.onclick = () => handleTopicClick(key);
+                container.appendChild(btn);
+            });
+            
+            document.getElementById('topics-view').classList.remove('hidden');
+        }
+
+        function handleTopicClick(key) {
+            currentTopic = key;
+            const topic = dag[key];
+            
+            if (topic.prereqs.length === 0) {
+                // Independent root node, go straight to resources
+                loadResources(key);
+            } else {
+                // Show gate
+                hideAll();
+                const prereqNames = topic.prereqs.map(p => dag[p].title).join(" and ");
+                document.getElementById('gate-message').innerHTML = `To understand <strong>${topic.title}</strong>, you need to be good at: <br><br>👉 <strong>${prereqNames}</strong>.`;
+                document.getElementById('gate-view').classList.remove('hidden');
+            }
+        }
+
+        function resolveGate(choice) {
+            if (choice === 'A') {
+                loadResources(currentTopic);
+            } else if (choice === 'B') {
+                alert("Simulating diagnostic quiz... \n\nResult: You have some gaps in the prerequisite topics.");
+                // Redirect to learning prerequisites
+                const firstPrereq = dag[currentTopic].prereqs[0];
+                alert(`Redirecting you to learn: ${dag[firstPrereq].title}`);
+                loadResources(firstPrereq);
+            } else if (choice === 'C') {
+                // Redirect to learning prerequisites
+                const firstPrereq = dag[currentTopic].prereqs[0];
+                alert(`Smart choice! Let's build your foundation in: ${dag[firstPrereq].title} first.`);
+                loadResources(firstPrereq);
+            }
+        }
+
+        function loadResources(key) {
+            hideAll();
+            const topic = dag[key];
+            document.getElementById('resource-title').innerText = `Learning: ${topic.title}`;
+            document.getElementById('ai-summary-text').innerText = topic.summary;
+            document.getElementById('real-world-text').innerText = topic.realWorld;
+            
+            switchTab('overview');
+            document.getElementById('resources-view').classList.remove('hidden');
+        }
+
+        function switchTab(tabName) {
+            document.getElementById('tab-overview').classList.add('hidden');
+            document.getElementById('tab-deepdive').classList.add('hidden');
+            document.getElementById('tab-realworld').classList.add('hidden');
+            
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            
+            if(tabName === 'overview') {
+                document.getElementById('tab-overview').classList.remove('hidden');
+                document.querySelectorAll('.tab')[0].classList.add('active');
+            } else if (tabName === 'deepdive') {
+                document.getElementById('tab-deepdive').classList.remove('hidden');
+                document.querySelectorAll('.tab')[1].classList.add('active');
+            } else if (tabName === 'realworld') {
+                document.getElementById('tab-realworld').classList.remove('hidden');
+                document.querySelectorAll('.tab')[2].classList.add('active');
+            }
+        }
+
+        function goBackToTopics() {
+            showTopics();
+        }
+    </script>
+</body>
+</html>
