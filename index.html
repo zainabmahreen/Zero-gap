@@ -2,216 +2,233 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Harness - Physics Diagnostic</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pathfinder - Learning Diagnostic</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: { brand: '#4f46e5', brandLight: '#e0e7ff' }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --bg: #f8fafc;
-            --surface: #ffffff;
-            --text: #0f172a;
-            --text-light: #64748b;
-            --border: #e2e8f0;
+        body { 
+            -webkit-tap-highlight-color: transparent; 
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
         }
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 0;
-            line-height: 1.5;
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
+        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(15px); } 
+            to { opacity: 1; transform: translateY(0); } 
         }
-        header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 2rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .form-group {
-            margin-bottom: 1rem;
-        }
-        select, button {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            font-size: 1rem;
-            margin-top: 0.5rem;
-        }
-        button {
-            background: var(--primary);
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-        button:hover {
-            background: var(--primary-hover);
-        }
-        button.secondary {
-            background: var(--surface);
-            color: var(--text);
-            border: 1px solid var(--border);
-        }
-        button.secondary:hover {
-            background: var(--bg);
-        }
-        .hidden {
-            display: none !important;
-        }
-        .topic-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        .topic-btn {
-            background: var(--surface);
-            color: var(--primary);
-            border: 2px solid var(--primary);
-        }
-        .topic-btn:hover {
-            background: var(--primary);
-            color: white;
-        }
-        .tabs {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 0.5rem;
-        }
-        .tab {
-            cursor: pointer;
-            color: var(--text-light);
-            font-weight: 500;
-        }
-        .tab.active {
-            color: var(--primary);
-            border-bottom: 2px solid var(--primary);
-        }
-        .resource-box {
-            background: var(--bg);
-            padding: 1rem;
-            border-radius: 4px;
-            margin-bottom: 1rem;
-            border-left: 4px solid var(--primary);
+        .hide-view { display: none !important; }
+        
+        /* Custom Select Arrow */
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <header>
-            <h1>AI Harness Educational Diagnostic</h1>
-            <p style="color: var(--text-light)">Fill your foundational gaps dynamically.</p>
+<body class="font-sans text-slate-800 flex justify-center">
+
+    <!-- App Container (Mobile First Layout) -->
+    <div class="w-full max-w-md min-h-screen relative shadow-2xl bg-slate-50 flex flex-col overflow-hidden">
+        
+        <!-- Top App Bar -->
+        <header class="bg-white px-6 py-5 shadow-sm z-10 flex items-center justify-between">
+            <div>
+                <h1 class="text-xl font-bold text-slate-900 tracking-tight"><i class="fa-solid fa-layer-group text-brand mr-2"></i>Pathfinder</h1>
+                <p class="text-xs text-slate-500 font-medium mt-0.5">Fill your foundational gaps</p>
+            </div>
+            <div class="h-10 w-10 rounded-full bg-brandLight flex items-center justify-center text-brand">
+                <i class="fa-solid fa-user"></i>
+            </div>
         </header>
 
-        <!-- Phase 1: Syllabus Selection -->
-        <div id="syllabus-view" class="card">
-            <h2>Select Your Curriculum</h2>
-            <div class="form-group">
-                <label>Board</label>
-                <select id="board-select">
-                    <option value="cbse">CBSE</option>
-                    <option value="icse" disabled>ICSE (Coming Soon)</option>
-                    <option value="state" disabled>State Board (Coming Soon)</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Class</label>
-                <select id="class-select">
-                    <option value="11">Class 11</option>
-                    <option value="12" disabled>Class 12 (Coming Soon)</option>
-                    <option value="10" disabled>Class 10 (Coming Soon)</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Subject</label>
-                <select id="subject-select">
-                    <option value="physics">Physics (Kinematics Slice)</option>
-                    <option value="chem" disabled>Chemistry (Coming Soon)</option>
-                </select>
-            </div>
-            <button onclick="showTopics()">Proceed to Topics</button>
-        </div>
-
-        <!-- Phase 2: Topic Selection (DAG) -->
-        <div id="topics-view" class="card hidden">
-            <h2>Class 11 Physics - Kinematics</h2>
-            <p>Select a topic you want to study. We'll check if you have the prerequisites covered.</p>
-            <div class="topic-grid" id="topic-container">
-                <!-- Injected via JS -->
-            </div>
-        </div>
-
-        <!-- Phase 3: A/B/C Prerequisite Gate -->
-        <div id="gate-view" class="card hidden">
-            <h2>Wait! Prerequisite Check</h2>
-            <p id="gate-message"></p>
-            <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.5rem;">
-                <button onclick="resolveGate('A')">A: Yes, I'm good at them. I can proceed.</button>
-                <button class="secondary" onclick="resolveGate('B')">B: I'm unsure. Take a quick quiz to test me.</button>
-                <button class="secondary" onclick="resolveGate('C')">C: No, I'm not good at them. Teach me those first.</button>
-            </div>
-        </div>
-
-        <!-- Phase 4: Resources & AI Summary -->
-        <div id="resources-view" class="card hidden">
-            <h2 id="resource-title"></h2>
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto p-5 pb-20 relative">
             
-            <div class="tabs">
-                <div class="tab active" onclick="switchTab('overview')">Overview (AI Summary)</div>
-                <div class="tab" onclick="switchTab('deepdive')">Deep Dive</div>
-                <div class="tab" onclick="switchTab('realworld')">Real-World Application</div>
+            <!-- Phase 1: Syllabus Selection -->
+            <div id="syllabus-view" class="fade-in">
+                <div class="glass-card rounded-3xl p-6 shadow-sm mb-6">
+                    <h2 class="text-lg font-bold mb-4 text-slate-800">Set Your Curriculum</h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-600 mb-1.5 ml-1">Board</label>
+                            <select id="board-select" class="w-full bg-white border border-slate-200 text-slate-700 text-sm rounded-xl focus:ring-2 focus:ring-brand focus:border-brand block p-3.5 shadow-sm transition-all outline-none">
+                                <option value="cbse">CBSE (Central Board)</option>
+                                <option value="icse" disabled>ICSE (Coming Soon)</option>
+                                <option value="state" disabled>State Board (Coming Soon)</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-600 mb-1.5 ml-1">Class</label>
+                            <select id="class-select" class="w-full bg-white border border-slate-200 text-slate-700 text-sm rounded-xl focus:ring-2 focus:ring-brand focus:border-brand block p-3.5 shadow-sm transition-all outline-none">
+                                <option value="11">Class 11</option>
+                                <option value="12" disabled>Class 12 (Coming Soon)</option>
+                                <option value="10" disabled>Class 10 (Coming Soon)</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-600 mb-1.5 ml-1">Subject</label>
+                            <select id="subject-select" class="w-full bg-white border border-slate-200 text-slate-700 text-sm rounded-xl focus:ring-2 focus:ring-brand focus:border-brand block p-3.5 shadow-sm transition-all outline-none">
+                                <option value="physics">Physics (Kinematics)</option>
+                                <option value="chem" disabled>Chemistry (Coming Soon)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button onclick="showTopics()" class="mt-8 w-full bg-brand hover:bg-indigo-700 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-indigo-200 transition-all active:scale-95 flex justify-center items-center gap-2">
+                        Proceed to Topics <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
             </div>
 
-            <div id="tab-overview">
-                <div class="resource-box">
-                    <strong>AI Generated Summary (Pre-computed):</strong>
-                    <p id="ai-summary-text"></p>
+            <!-- Phase 2: Topic Selection -->
+            <div id="topics-view" class="hide-view fade-in">
+                <div class="flex items-center gap-3 mb-6">
+                    <button onclick="goHome()" class="h-10 w-10 bg-white rounded-full shadow-sm flex items-center justify-center text-slate-600 hover:text-brand transition-colors">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800">Kinematics</h2>
+                        <p class="text-sm text-slate-500">Select a topic to master</p>
+                    </div>
                 </div>
-                <div class="resource-box">
-                    <strong>Recommended Quick Video:</strong>
-                    <p>📺 YouTube: <a href="#" style="color:var(--primary)">2-Minute Basics for this topic</a></p>
-                </div>
-            </div>
-
-            <div id="tab-deepdive" class="hidden">
-                <div class="resource-box">
-                    <strong>In-Depth Study Materials:</strong>
-                    <ul>
-                        <li>Khan Academy: Comprehensive Article & Derivations</li>
-                        <li>NCERT Textbook Reference: Chapter Modules</li>
-                    </ul>
+                
+                <div class="flex flex-col gap-3" id="topic-container">
+                    <!-- Topics injected via JS -->
                 </div>
             </div>
 
-            <div id="tab-realworld" class="hidden">
-                <div class="resource-box" style="border-left-color: #10b981;">
-                    <strong>Why does this matter?</strong>
-                    <p id="real-world-text"></p>
+            <!-- Phase 3: Prerequisite Gate -->
+            <div id="gate-view" class="hide-view fade-in">
+                <div class="glass-card rounded-3xl p-6 shadow-sm text-center border-t-4 border-t-amber-400">
+                    <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-500 text-2xl">
+                        <i class="fa-solid fa-hand"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-slate-800 mb-2">Wait! Prerequisite Check</h2>
+                    <div id="gate-message" class="text-slate-600 mb-6 text-sm leading-relaxed"></div>
+                    
+                    <div class="space-y-3">
+                        <button onclick="resolveGate('A')" class="w-full bg-brand text-white font-semibold py-3.5 px-4 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-between">
+                            <span>Yes, I'm good at them</span> <i class="fa-solid fa-check-circle"></i>
+                        </button>
+                        <button onclick="resolveGate('B')" class="w-full bg-white border border-slate-200 text-slate-700 font-semibold py-3.5 px-4 rounded-xl shadow-sm transition-all active:scale-95 flex items-center justify-between hover:bg-slate-50">
+                            <span>Unsure? Take a quick quiz</span> <i class="fa-solid fa-clipboard-question text-slate-400"></i>
+                        </button>
+                        <button onclick="resolveGate('C')" class="w-full bg-white border border-slate-200 text-slate-700 font-semibold py-3.5 px-4 rounded-xl shadow-sm transition-all active:scale-95 flex items-center justify-between hover:bg-slate-50">
+                            <span>No, teach me those first</span> <i class="fa-solid fa-book-open-reader text-slate-400"></i>
+                        </button>
+                    </div>
+                    
+                    <button onclick="showTopics()" class="mt-4 text-sm text-slate-400 hover:text-slate-600 font-medium">Cancel</button>
                 </div>
             </div>
-            
-            <button onclick="goBackToTopics()" style="margin-top: 1rem;" class="secondary">← Back to Topics</button>
-        </div>
+
+            <!-- Phase 4: Resources -->
+            <div id="resources-view" class="hide-view fade-in">
+                <div class="flex items-center gap-3 mb-6">
+                    <button onclick="showTopics()" class="h-10 w-10 bg-white rounded-full shadow-sm flex items-center justify-center text-slate-600 hover:text-brand transition-colors">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <div>
+                        <span class="text-xs font-bold text-brand uppercase tracking-wider">Now Learning</span>
+                        <h2 id="resource-title" class="text-xl font-bold text-slate-800 leading-tight"></h2>
+                    </div>
+                </div>
+                
+                <!-- Custom Tabs -->
+                <div class="bg-slate-200/50 p-1.5 rounded-2xl flex mb-6">
+                    <button id="tab-btn-overview" onclick="switchTab('overview')" class="flex-1 py-2 text-sm font-semibold rounded-xl text-brand bg-white shadow-sm transition-all">Overview</button>
+                    <button id="tab-btn-deepdive" onclick="switchTab('deepdive')" class="flex-1 py-2 text-sm font-semibold rounded-xl text-slate-500 hover:text-slate-700 transition-all">Deep Dive</button>
+                    <button id="tab-btn-realworld" onclick="switchTab('realworld')" class="flex-1 py-2 text-sm font-semibold rounded-xl text-slate-500 hover:text-slate-700 transition-all">Real-World</button>
+                </div>
+
+                <!-- Tab Content: Overview -->
+                <div id="tab-overview" class="space-y-4">
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-indigo-50 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-brand"></div>
+                        <h3 class="text-xs font-bold text-brand uppercase tracking-wider mb-2 flex items-center gap-1.5"><i class="fa-solid fa-robot"></i> AI Summary</h3>
+                        <p id="ai-summary-text" class="text-slate-700 text-sm leading-relaxed"></p>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-1.5"><i class="fa-brands fa-youtube text-red-500"></i> Quick Video</h3>
+                        <a href="#" class="flex items-center p-3 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors group">
+                            <div class="h-10 w-10 bg-white rounded-full shadow-sm flex items-center justify-center mr-3 group-hover:scale-105 transition-transform">
+                                <i class="fa-solid fa-play text-brand text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-semibold text-slate-800">2-Minute Basics</p>
+                                <p class="text-xs text-slate-500">Visual explanation</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Tab Content: Deep Dive -->
+                <div id="tab-deepdive" class="hide-view space-y-4">
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Study Materials</h3>
+                        <ul class="space-y-3">
+                            <li class="flex gap-3 items-start p-3 rounded-xl bg-slate-50">
+                                <i class="fa-solid fa-leaf text-green-500 mt-0.5"></i>
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-800">Khan Academy</p>
+                                    <p class="text-xs text-slate-500">Comprehensive article & derivations</p>
+                                </div>
+                            </li>
+                            <li class="flex gap-3 items-start p-3 rounded-xl bg-slate-50">
+                                <i class="fa-solid fa-book text-blue-500 mt-0.5"></i>
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-800">NCERT Reference</p>
+                                    <p class="text-xs text-slate-500">Official chapter modules</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Tab Content: Real World -->
+                <div id="tab-realworld" class="hide-view">
+                    <div class="bg-slate-900 rounded-2xl p-6 shadow-md relative overflow-hidden text-white">
+                        <i class="fa-solid fa-earth-americas absolute -bottom-6 -right-4 text-8xl text-slate-800 opacity-50"></i>
+                        <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-3 relative z-10">Why does this matter?</h3>
+                        <p id="real-world-text" class="text-slate-200 text-sm leading-relaxed relative z-10"></p>
+                    </div>
+                </div>
+                
+            </div>
+        </main>
     </div>
 
     <script>
-        // DAG Structure based on agreed slice
+        // Exact same DAG structure
         const dag = {
             "vectors": { 
                 title: "Vectors", 
@@ -260,10 +277,15 @@
         let currentTopic = "";
 
         function hideAll() {
-            document.getElementById('syllabus-view').classList.add('hidden');
-            document.getElementById('topics-view').classList.add('hidden');
-            document.getElementById('gate-view').classList.add('hidden');
-            document.getElementById('resources-view').classList.add('hidden');
+            document.getElementById('syllabus-view').classList.add('hide-view');
+            document.getElementById('topics-view').classList.add('hide-view');
+            document.getElementById('gate-view').classList.add('hide-view');
+            document.getElementById('resources-view').classList.add('hide-view');
+        }
+
+        function goHome() {
+            hideAll();
+            document.getElementById('syllabus-view').classList.remove('hide-view');
         }
 
         function showTopics() {
@@ -273,13 +295,17 @@
             
             Object.keys(dag).forEach(key => {
                 const btn = document.createElement('button');
-                btn.className = 'topic-btn';
-                btn.innerText = dag[key].title;
+                // Beautiful tailwind classes for the topic buttons
+                btn.className = 'w-full text-left px-5 py-4 rounded-2xl bg-white border border-slate-100 hover:border-brand hover:shadow-md transition-all font-semibold text-slate-700 flex justify-between items-center group active:scale-95';
+                btn.innerHTML = `
+                    <span>${dag[key].title}</span>
+                    <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-brand transition-colors text-sm"></i>
+                `;
                 btn.onclick = () => handleTopicClick(key);
                 container.appendChild(btn);
             });
             
-            document.getElementById('topics-view').classList.remove('hidden');
+            document.getElementById('topics-view').classList.remove('hide-view');
         }
 
         function handleTopicClick(key) {
@@ -287,14 +313,12 @@
             const topic = dag[key];
             
             if (topic.prereqs.length === 0) {
-                // Independent root node, go straight to resources
                 loadResources(key);
             } else {
-                // Show gate
                 hideAll();
-                const prereqNames = topic.prereqs.map(p => dag[p].title).join(" and ");
-                document.getElementById('gate-message').innerHTML = `To understand <strong>${topic.title}</strong>, you need to be good at: <br><br>👉 <strong>${prereqNames}</strong>.`;
-                document.getElementById('gate-view').classList.remove('hidden');
+                const prereqNames = topic.prereqs.map(p => `<span class="text-brand font-bold bg-brandLight px-2 py-0.5 rounded">${dag[p].title}</span>`).join(" & ");
+                document.getElementById('gate-message').innerHTML = `To understand <strong>${topic.title}</strong>, you need to be good at:<br><br><div class="flex flex-wrap justify-center gap-2">${prereqNames}</div>`;
+                document.getElementById('gate-view').classList.remove('hide-view');
             }
         }
 
@@ -303,14 +327,10 @@
                 loadResources(currentTopic);
             } else if (choice === 'B') {
                 alert("Simulating diagnostic quiz... \n\nResult: You have some gaps in the prerequisite topics.");
-                // Redirect to learning prerequisites
                 const firstPrereq = dag[currentTopic].prereqs[0];
-                alert(`Redirecting you to learn: ${dag[firstPrereq].title}`);
                 loadResources(firstPrereq);
             } else if (choice === 'C') {
-                // Redirect to learning prerequisites
                 const firstPrereq = dag[currentTopic].prereqs[0];
-                alert(`Smart choice! Let's build your foundation in: ${dag[firstPrereq].title} first.`);
                 loadResources(firstPrereq);
             }
         }
@@ -318,35 +338,31 @@
         function loadResources(key) {
             hideAll();
             const topic = dag[key];
-            document.getElementById('resource-title').innerText = `Learning: ${topic.title}`;
+            document.getElementById('resource-title').innerText = topic.title;
             document.getElementById('ai-summary-text').innerText = topic.summary;
             document.getElementById('real-world-text').innerText = topic.realWorld;
             
             switchTab('overview');
-            document.getElementById('resources-view').classList.remove('hidden');
+            document.getElementById('resources-view').classList.remove('hide-view');
         }
 
         function switchTab(tabName) {
-            document.getElementById('tab-overview').classList.add('hidden');
-            document.getElementById('tab-deepdive').classList.add('hidden');
-            document.getElementById('tab-realworld').classList.add('hidden');
+            // Hide all contents
+            document.getElementById('tab-overview').classList.add('hide-view');
+            document.getElementById('tab-deepdive').classList.add('hide-view');
+            document.getElementById('tab-realworld').classList.add('hide-view');
             
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            // Reset button styles
+            const btns = ['overview', 'deepdive', 'realworld'];
+            btns.forEach(b => {
+                const el = document.getElementById('tab-btn-' + b);
+                el.className = 'flex-1 py-2 text-sm font-semibold rounded-xl text-slate-500 hover:text-slate-700 transition-all';
+            });
             
-            if(tabName === 'overview') {
-                document.getElementById('tab-overview').classList.remove('hidden');
-                document.querySelectorAll('.tab')[0].classList.add('active');
-            } else if (tabName === 'deepdive') {
-                document.getElementById('tab-deepdive').classList.remove('hidden');
-                document.querySelectorAll('.tab')[1].classList.add('active');
-            } else if (tabName === 'realworld') {
-                document.getElementById('tab-realworld').classList.remove('hidden');
-                document.querySelectorAll('.tab')[2].classList.add('active');
-            }
-        }
-
-        function goBackToTopics() {
-            showTopics();
+            // Activate selected tab
+            document.getElementById('tab-' + tabName).classList.remove('hide-view');
+            const activeBtn = document.getElementById('tab-btn-' + tabName);
+            activeBtn.className = 'flex-1 py-2 text-sm font-semibold rounded-xl text-brand bg-white shadow-sm transition-all';
         }
     </script>
 </body>
